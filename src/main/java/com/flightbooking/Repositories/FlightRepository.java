@@ -7,5 +7,4 @@ import com.flightbooking.Entities.Flight;
 
 @Repository
 public interface FlightRepository extends JpaRepository<Flight, Long>{
-    
 }
