@@ -1,24 +1,26 @@
-package com.flightbooking.Controllers;
+package com.flightbookingsystem.Controllers;
 
-import com.flightbooking.Entities.Flight;
-import com.flightbooking.Services.Implementations.FlightServiceImpl;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.flightbookingsystem.Entities.Flight;
+import com.flightbookingsystem.Services.Interfaces.IFlightService;
+
 @RestController
 @RequestMapping("api/flights")
 public class FlightController {
 
     @Autowired
-    private FlightServiceImpl _flightService;
+    private IFlightService _flightService;
 
     @PostMapping
     public ResponseEntity<?> createFlight(@RequestBody Flight flight) {
@@ -33,7 +35,7 @@ public class FlightController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateFlight(Long id, @RequestBody Flight flight) {
+    public ResponseEntity<?> updateFlight(@PathVariable Long id, @RequestBody Flight flight) {
         try {
             _flightService.updateFlight(id, flight).join();
             return ResponseEntity.ok("Updated flight whose ID is " + id);
@@ -50,7 +52,7 @@ public class FlightController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteFlightById(Long id) {
+    public ResponseEntity<?> deleteFlightById(@PathVariable Long id) {
         try {
             _flightService.deleteFlight(id).join();
             return ResponseEntity.ok("Flight deleted whose ID is " + id);
@@ -79,7 +81,7 @@ public class FlightController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getFlightById(Long id) {
+    public ResponseEntity<?> getFlightById(@PathVariable Long id) {
         try {
             Flight flight = _flightService.getFlightById(id).join();
             return ResponseEntity.ok(flight);

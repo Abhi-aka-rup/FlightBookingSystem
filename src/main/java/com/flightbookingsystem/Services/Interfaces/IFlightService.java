@@ -1,9 +1,9 @@
-package com.flightbooking.Services.Interfaces;
+package com.flightbookingsystem.Services.Interfaces;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import com.flightbooking.Entities.Flight;
+import com.flightbookingsystem.Entities.Flight;
 
 public interface IFlightService {
     CompletableFuture<Void> createFlight(Flight flight);
