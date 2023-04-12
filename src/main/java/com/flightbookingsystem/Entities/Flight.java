@@ -1,5 +1,7 @@
 package com.flightbookingsystem.Entities;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,13 +27,13 @@ public class Flight {
     private String arrivalAirport;
 
     @Column(name = "departure_time")
-    private String departureTime;
+    private LocalDateTime departureTime;
 
     @Column(name = "arrival_time")
-    private String arrivalTime;
+    private LocalDateTime arrivalTime;
 
     @Column(name = "available_seats")
-    private String availableSeats;
+    private Integer availableSeats;
 
     public Long getId() {
         return this.id;
@@ -61,35 +63,36 @@ public class Flight {
         this.arrivalAirport = arrivalAirport;
     }
 
-    public String getDepartureTime() {
+    public LocalDateTime getDepartureTime() {
         return this.departureTime;
     }
 
-    public void setDepartureTime(String departureTime) {
+    public void setDepartureTime(LocalDateTime departureTime) {
         this.departureTime = departureTime;
     }
 
-    public String getArrivalTime() {
+    public LocalDateTime getArrivalTime() {
         return this.arrivalTime;
     }
 
-    public void setArrivalTime(String arrivalTime) {
+    public void setArrivalTime(LocalDateTime arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
 
-    public String getAvailableSeats() {
+    public Integer getAvailableSeats() {
         return this.availableSeats;
     }
 
-    public void setAvailableSeats(String availableSeats) {
+    public void setAvailableSeats(Integer availableSeats) {
         this.availableSeats = availableSeats;
     }
 
     public Flight() {
     }
 
-    public Flight(Long id, String flightNumber, String departureAirport, String arrivalAirport, String departureTime,
-            String arrivalTime, String availableSeats) {
+    public Flight(Long id, String flightNumber, String departureAirport, String arrivalAirport,
+            LocalDateTime departureTime,
+            LocalDateTime arrivalTime, Integer availableSeats) {
         this.id = id;
         this.flightNumber = flightNumber;
         this.departureAirport = departureAirport;
