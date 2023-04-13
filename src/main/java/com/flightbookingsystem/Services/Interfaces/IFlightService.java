@@ -1,5 +1,6 @@
 package com.flightbookingsystem.Services.Interfaces;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -12,4 +13,5 @@ public interface IFlightService {
 
     CompletableFuture<List<Flight>> getAllFlights();
     CompletableFuture<Flight> getFlightById(Long id);
+    CompletableFuture<List<Flight>> searchFlights(String departureAirport, String arrivalAirport, LocalDateTime departureTime);
 }

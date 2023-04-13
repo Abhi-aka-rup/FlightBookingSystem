@@ -1,5 +1,6 @@
 package com.flightbookingsystem.Services.Implementations;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -11,6 +12,8 @@ import com.flightbookingsystem.Entities.Flight;
 import com.flightbookingsystem.Repositories.FlightRepository;
 import com.flightbookingsystem.Services.Interfaces.IFlightService;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class FlightServiceImpl implements IFlightService {
 
@@ -21,7 +24,6 @@ public class FlightServiceImpl implements IFlightService {
     @Async
     public CompletableFuture<Void> createFlight(Flight flight) {
         // TODO: can add validation to verify flight property passed by user
-
         _flightRepository.saveAndFlush(flight);
 
         return CompletableFuture.completedFuture(null);
@@ -31,34 +33,27 @@ public class FlightServiceImpl implements IFlightService {
     @Async
     public CompletableFuture<Void> updateFlight(Long id, Flight flight) {
         // TODO: can add validation to verify id and flight property passed by user
+        Flight existingFlight = _flightRepository.getReferenceById(id);
 
-        return _flightRepository.findById(id)
-                .map(existingFlight -> {
-                    existingFlight.setFlightNumber(flight.getFlightNumber());
-                    existingFlight.setDepartureTime(flight.getDepartureTime());
-                    existingFlight.setDepartureAirport(flight.getDepartureAirport());
-                    existingFlight.setArrivalTime(flight.getArrivalTime());
-                    existingFlight.setArrivalAirport(flight.getArrivalAirport());
-                    existingFlight.setAvailableSeats(flight.getAvailableSeats());
-                    _flightRepository.saveAndFlush(existingFlight);
-                    return CompletableFuture.completedFuture(null);
-                })
-                .orElseThrow(() -> new RuntimeException("Flight not found with id: " + id))
-                .thenApply(result -> null);
+        existingFlight.setFlightNumber(flight.getFlightNumber());
+        existingFlight.setDepartureTime(flight.getDepartureTime());
+        existingFlight.setDepartureAirport(flight.getDepartureAirport());
+        existingFlight.setArrivalTime(flight.getArrivalTime());
+        existingFlight.setArrivalAirport(flight.getArrivalAirport());
+        existingFlight.setAvailableSeats(flight.getAvailableSeats());
+        _flightRepository.saveAndFlush(existingFlight);
+
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
     @Async
     public CompletableFuture<Void> deleteFlight(Long id) {
         // TODO: can add validation to verify id property passed by user
+        Flight existingFlight = _flightRepository.findById(id).get();
+        _flightRepository.delete(existingFlight);
 
-        return _flightRepository.findById(id)
-                .map(existingFlight -> {
-                    _flightRepository.delete(existingFlight);
-                    return CompletableFuture.completedFuture(null);
-                })
-                .orElseThrow(() -> new RuntimeException("Flight not found with id: " + id))
-                .thenApply(result -> null);
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
@@ -73,13 +68,23 @@ public class FlightServiceImpl implements IFlightService {
     @Async
     public CompletableFuture<Flight> getFlightById(Long id) {
         // TODO: can add validation to verify id property passed by user
+        Flight flight = _flightRepository.findById(id).get();
 
-        return _flightRepository.findById(id)
-                .map(existingFlight -> {
-                    return CompletableFuture.completedFuture(existingFlight);
-                })
-                .orElseThrow(() -> new RuntimeException("Flight not found with id: " + id))
-                .thenApply(result -> result);
+        return CompletableFuture.completedFuture(flight);
+    }
+
+    @Override
+    @Async
+    public CompletableFuture<List<Flight>> searchFlights(String departureAirport, String arrivalAirport,
+            LocalDateTime departureTime) {
+        // TODO Auto-generated method stub
+        List<Flight> availableFlights = _flightRepository.findByDepartureAirportAndArrivalAirportAndDepartureTime(
+                departureAirport, arrivalAirport, departureTime);
+        if (availableFlights.isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+
+        return CompletableFuture.completedFuture(availableFlights);
     }
 
 }
